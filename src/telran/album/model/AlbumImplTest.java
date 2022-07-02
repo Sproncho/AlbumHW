@@ -41,7 +41,6 @@ class AlbumImplTest {
         boolean res = album.removePhoto(24,1);
         assertTrue(res);
         assertEquals(size - 1, album.size());
-
     }
     @Test
     void testUpdatePhoto(){

@@ -38,6 +38,7 @@ public class AlbumImpl implements Album{
         size--;
         System.arraycopy(photos,0,res,0,ind);
         System.arraycopy(photos,ind+1,res,ind,size - ind);
+        photos = res;
         return true;
     }
 
