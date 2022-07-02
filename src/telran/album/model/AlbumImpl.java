@@ -18,9 +18,14 @@ public class AlbumImpl implements Album{
     public boolean addPhoto(Photo photo) {
         if(findIndUsingPredicate((Photo o) -> o.getPhotoID() == photo.getPhotoID()) != -1 || size == photos.length)
             return false;
-        photos[size] = photo;
+        int ind = Arrays.binarySearch(photos,0,size,photo);
         size++;
-        Arrays.sort(photos,0,size);
+        ind = ind >=0 ? ind : - ind  -1 ;
+        Photo[] res = new Photo[photos.length];
+        System.arraycopy(photos,0,res,0,ind);
+        res[ind] = photo;
+        System.arraycopy(photos,ind,res,ind+1,size - ind);
+        photos = res;
         return true;
     }
 
@@ -29,9 +34,10 @@ public class AlbumImpl implements Album{
         int ind = findIndUsingPredicate((Photo o) ->  o.getPhotoID() == photoId && o.getAlbumID() == albumId);
         if(ind == -1)
             return false;
-        photos[ind] = photos[size-1];
+        Photo[] res = new Photo[photos.length];
         size--;
-        Arrays.sort(photos,0,size);
+        System.arraycopy(photos,0,res,0,ind);
+        System.arraycopy(photos,ind+1,res,ind,size - ind);
         return true;
     }
 
