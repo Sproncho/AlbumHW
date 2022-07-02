@@ -9,6 +9,6 @@ public interface Album {
     public Photo getPhotoFromAlbum(int photoId, int albumId);
     public Photo[] getAllPhotoFromAlbum(int albumId);
     public Photo[] getPhotoBetweenDates(LocalDate dateFrom, LocalDate DateTo);
-    public int Size();
+    public int size();
 
 }

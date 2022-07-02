@@ -1,6 +1,7 @@
 package telran.album.model;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
@@ -15,46 +16,87 @@ public class AlbumImpl implements Album{
 
     @Override
     public boolean addPhoto(Photo photo) {
-
-        return false;
+        if(findIndUsingPredicate((Photo o) -> o.getPhotoID() == photo.getPhotoID()) != -1 || size == photos.length)
+            return false;
+        photos[size] = photo;
+        size++;
+        Arrays.sort(photos,0,size);
+        return true;
     }
 
     @Override
     public boolean removePhoto(int photoId, int albumId) {
-        return false;
+        int ind = findIndUsingPredicate((Photo o) ->  o.getPhotoID() == photoId && o.getAlbumID() == albumId);
+        if(ind == -1)
+            return false;
+        photos[ind] = photos[size-1];
+        size--;
+        Arrays.sort(photos,0,size);
+        return true;
     }
 
     @Override
     public boolean updatePhoto(int photoId, int albumId, String url) {
-        return false;
+      int ind = findIndUsingPredicate((Photo o) ->  o.getPhotoID() == photoId && o.getAlbumID() == albumId);
+      if(ind == -1)
+          return false;
+      photos[ind].setUrl(url);
+      return true;
     }
 
     @Override
     public Photo getPhotoFromAlbum(int photoId, int albumId) {
-        return null;
+      int ind = findIndUsingPredicate((Photo o) ->  o.getPhotoID() == photoId && o.getAlbumID() == albumId);
+      if(ind == -1)
+          return null;
+      return photos[ind];
     }
 
     @Override
     public Photo[] getAllPhotoFromAlbum(int albumId) {
-        return new Photo[0];
+        Photo[] res = findPhotosUsingPredicate((Photo o) -> o.getAlbumID() == albumId);
+        return res;
     }
 
     @Override
-    public Photo[] getPhotoBetweenDates(LocalDate dateFrom, LocalDate DateTo) {
-        return new Photo[0];
+    public Photo[] getPhotoBetweenDates(LocalDate dateFrom, LocalDate dateTo) {
+        Photo[] res = findPhotosUsingPredicate((Photo o)-> o.getDate().isAfter(dateFrom) && o.getDate().isBefore(dateTo));
+        return res;
     }
 
     @Override
-    public int Size() {
-        return 0;
+    public int size() {
+        return this.size;
     }
 
-    private  <Photo> int findIndUsingPredicate( Predicate<Photo> predicate){
+    private int findIndUsingPredicate( Predicate<Photo> predicate){
         for (int i = 0; i < size; i++) {
-            if(predicate.test( photos[i])){
+            if(predicate.test((Photo) photos[i])){
                 return i;
             }
         }
-        return 0; .
+        return -1;
+    }
+
+    private Photo[]  findPhotosUsingPredicate(Predicate<Photo> predicate){
+        int count  = 0;
+        for (int i = 0; i < size; i++) {
+            if(predicate.test(photos[i]))
+                count++;
+        }
+        Photo[] res = new Photo[count];
+        int ind = 0;
+        for (int i = 0; i < size; i++) {
+            if(predicate.test(photos[i])){
+                res[ind] = photos[i];
+                ind++;
+            }
+        }
+        return res;
+    }
+    public void printPhotos(){
+        for (int i = 0; i < photos.length; i++) {
+            System.out.println(photos[i]);
+        }
     }
 }
